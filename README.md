@@ -24,6 +24,7 @@ This project is structured into three main layers:
 
 ## 📁 Project Structure
 
+```text
 Win11-Custom-Image-Auto-OOBE/
 │
 ├── README.md
@@ -44,7 +45,7 @@ Win11-Custom-Image-Auto-OOBE/
 └── docs/
     ├── Deployment-Guide.md
     ├── Architecture.md
-
+```
 ---
 
 ## 🚀 How It Works
