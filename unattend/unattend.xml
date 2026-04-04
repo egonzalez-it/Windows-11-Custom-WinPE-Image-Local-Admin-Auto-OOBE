@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<unattend xmlns="urn:schemas-microsoft-com:unattend">
+
+  <settings pass="oobeSystem">
+    <component name="Microsoft-Windows-International-Core" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+      <InputLocale>en-US</InputLocale>
+      <SystemLocale>en-US</SystemLocale>
+      <UILanguage>en-US</UILanguage>
+      <UserLocale>en-US</UserLocale>
+    </component>
+
+    <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+      <OOBE>
+        <HideEULAPage>true</HideEULAPage>
+        <HideOEMRegistrationScreen>true</HideOEMRegistrationScreen>
+        <HideOnlineAccountScreens>true</HideOnlineAccountScreens>
+        <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+        <NetworkLocation>Work</NetworkLocation>
+        <ProtectYourPC>1</ProtectYourPC>
+        <SkipMachineOOBE>true</SkipMachineOOBE>
+        <SkipUserOOBE>true</SkipUserOOBE>
+      </OOBE>
+
+      <TimeZone>Eastern Standard Time</TimeZone>
+      <RegisteredOwner>Deployer</RegisteredOwner>
+
+      <UserAccounts>
+        <LocalAccounts>
+          <LocalAccount>
+            <Password>
+              <Value>0o9i8u7y</Value>
+              <PlainText>true</PlainText>
+            </Password>
+            <DisplayName>localuser</DisplayName>
+            <Group>Users</Group>
+            <Name>localuser</Name>
+            <Description>Local User</Description>
+          </LocalAccount>
+          <LocalAccount>
+            <Password>
+              <Value>Pa$$w0rd</Value>
+              <PlainText>true</PlainText>
+            </Password>
+            <DisplayName>ladmin</DisplayName>
+            <Group>Administrators</Group>
+            <Name>ladmin</Name>
+            <Description>Local Admin</Description>
+          </LocalAccount>
+        </LocalAccounts>
+      </UserAccounts>
+
+      <AutoLogon>
+        <Username>ladmin</Username>
+        <Password>
+          <Value>Pa$$w0rd</Value>
+          <PlainText>true</PlainText>
+        </Password>
+        <Enabled>true</Enabled>
+        <LogonCount>1</LogonCount>
+      </AutoLogon>
+
+      <!-- Ensure both local accounts' passwords never expire after first logon -->
+      <FirstLogonCommands>
+        <SynchronousCommand wcm:action="add">
+          <Order>1</Order>
+          <Description>Password never expires for local accounts</Description>
+          <CommandLine>powershell -ExecutionPolicy Bypass -Command "Set-LocalUser -Name 'ladmin' -PasswordNeverExpires $true; Set-LocalUser -Name 'localuser' -PasswordNeverExpires $true"</CommandLine>
+        </SynchronousCommand>
+      </FirstLogonCommands>
+
+      <DoNotCleanTaskBar>true</DoNotCleanTaskBar>
+    </component>
+  </settings>
+
+  <settings pass="specialize">
+    <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+      <TimeZone>Eastern Standard Time</TimeZone>
+    </component>
+
+    <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+      <RunSynchronous>
+        <!-- Disable built-in Administrator -->
+        <RunSynchronousCommand wcm:action="add">
+          <Order>1</Order>
+          <Path>cmd /c net user Administrator /active:no</Path>
+          <Description>Disable built-in Administrator</Description>
+        </RunSynchronousCommand>
+
+        <!-- Disable Widgets -->
+        <RunSynchronousCommand wcm:action="add">
+          <Order>2</Order>
+          <Path>cmd /c reg add "HKLM\Software\Policies\Microsoft\Dsh" /v AllowNewsAndInterests /t REG_DWORD /d 0 /f</Path>
+          <Description>Disable Widgets</Description>
+        </RunSynchronousCommand>
+
+        <!-- Disable Bing in Search -->
+        <RunSynchronousCommand wcm:action="add">
+          <Order>3</Order>
+          <Path>cmd /c reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v DisableSearchBoxSuggestions /t REG_DWORD /d 1 /f</Path>
+          <Description>Disable Bing Search in Start</Description>
+        </RunSynchronousCommand>
+
+        <!-- Enable Num Lock at boot -->
+        <RunSynchronousCommand wcm:action="add">
+          <Order>4</Order>
+          <Path>cmd /c reg add "HKU\.DEFAULT\Control Panel\Keyboard" /v InitialKeyboardIndicators /t REG_SZ /d 2 /f</Path>
+          <Description>Enable Num Lock at logon</Description>
+        </RunSynchronousCommand>
+
+        <!-- Open File Explorer to This PC -->
+        <RunSynchronousCommand wcm:action="add">
+          <Order>5</Order>
+          <Path>cmd /c reg add "HKU\.DEFAULT\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v LaunchTo /t REG_DWORD /d 1 /f</Path>
+        </RunSynchronousCommand>
+
+        <!-- Show End Task on Taskbar -->
+        <RunSynchronousCommand wcm:action="add">
+          <Order>6</Order>
+          <Path>cmd /c reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v TaskbarEndTask /t REG_DWORD /d 1 /f</Path>
+        </RunSynchronousCommand>
+
+        <!-- Hide Task View Button -->
+        <RunSynchronousCommand wcm:action="add">
+          <Order>7</Order>
+          <Path>cmd /c reg add "HKU\.DEFAULT\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v ShowTaskViewButton /t REG_DWORD /d 0 /f</Path>
+        </RunSynchronousCommand>
+
+        <!-- Disable Search Highlights -->
+        <RunSynchronousCommand wcm:action="add">
+          <Order>8</Order>
+          <Path>cmd /c reg add "HKU\.DEFAULT\Software\Microsoft\Windows\CurrentVersion\SearchSettings" /v IsDynamicSearchBoxEnabled /t REG_DWORD /d 0 /f</Path>
+        </RunSynchronousCommand>
+
+        <!-- Disable App Suggestions -->
+        <RunSynchronousCommand wcm:action="add">
+          <Order>9</Order>
+          <Path>cmd /c reg add "HKLM\Software\Policies\Microsoft\Windows\CloudContent" /v DisableSoftLanding /t REG_DWORD /d 1 /f</Path>
+        </RunSynchronousCommand>
+
+        <!-- Set machine password policy to never expire (affects all local users) -->
+        <RunSynchronousCommand wcm:action="add">
+          <Order>10</Order>
+          <Path>cmd /c net accounts /maxpwage:unlimited</Path>
+          <Description>Disable password expiry globally</Description>
+        </RunSynchronousCommand>
+
+      </RunSynchronous>
+    </component>
+  </settings>
+
+  <cpi:offlineImage cpi:source="wim://install.wim#Windows 11 Pro" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
+</unattend>

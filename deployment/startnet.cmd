@@ -1,0 +1,2 @@
+wpeinit
+call installmenu.bat
