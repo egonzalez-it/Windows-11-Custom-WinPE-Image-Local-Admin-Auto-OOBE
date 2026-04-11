@@ -1,3 +1,11 @@
+![Windows 11](https://img.shields.io/badge/Windows-11-blue?logo=windows)
+![WinPE](https://img.shields.io/badge/WinPE-Boot_Environment-blueviolet)
+![DISM](https://img.shields.io/badge/DISM-Image_Servicing-important)
+![Unattend XML](https://img.shields.io/badge/Unattend.xml-Auto_OOBE-success)
+![Proxmox Tested](https://img.shields.io/badge/Proxmox-Tested-orange)
+![Automation](https://img.shields.io/badge/Deployment-Automated-brightgreen)
+![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)
+
 # Windows 11 Custom Image Deployment (WinPE + Auto OOBE)
 
 ## 📌 Overview
